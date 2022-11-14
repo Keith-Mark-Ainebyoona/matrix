@@ -1,7 +1,4 @@
-#ifndef MATRIX
 #include "matrix.h"
-#endif
-
 
 int main(void)
 {
@@ -16,10 +13,15 @@ int main(void)
 	fillMatrix(matrix1, r1, c1);
 	fillMatrix(matrix2, r2, c2);
 
+	printMatrix(matrix1, r1, c1);
+	printMatrix(matrix2, r2, c2);
+
 	printMatrix(AddM(matrix1, matrix2), r1, c1);
 	printMatrix(SubtractM(matrix1, matrix2), r1, c1);
 	printMatrix(MultiplyM(matrix1, matrix2), r1, c2);
 
+	printf("\nDeterminant of matrix 1 is : %.2lf\n", Determinant(matrix1, r1, c1));
+	printf("\nDeterminant of matrix 2 is : %.2lf\n", Determinant(matrix2, r2, c2));
 
 
 	
