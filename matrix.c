@@ -11,6 +11,26 @@ int** FormMatrix(int r1, int c1)
 	}
     return Matrix;
 }
+void freeMemory(int** m, int r)
+{
+    for (int i = 0; i < r; i++)
+    {
+        free(m[i]);
+    }
+}
+
+void printMatrix(int **M, int r, int c)
+{
+    for(int i = 0; i < r; i++)
+    {
+        for(int j = 0; j < c; j++)
+        {
+            printf("%d ", M[i][j]);
+        }
+        printf("\n");
+    }
+    printf("\n");
+}
 
 void fillMatrix(int **M, int r, int c)
 {
@@ -23,73 +43,54 @@ void fillMatrix(int **M, int r, int c)
     }
 }
 
-void printMatrix(int **M, int r, int c)
-{
-    printf("Matrix:\n");
-    for(int i = 0; i < r; i++)
-    {
-        for(int j = 0; j < c; j++)
-        {
-            printf("%d ", M[i][j]);
-        }
-        printf("\n");
-    }
-    printf("\n");
-}
 
-int ** AddM(int **M1, int **M2)
+void AddM(int **M1, int **M2)
 {
     if(r1 == r2 && c1 == c2)
     {
-        int **result = FormMatrix(r1, c1);
+        printf("\nAddition success:-)\nPrinting Result...\n");
 
         for(int i = 0; i < r1; i++)
         {
             for(int j = 0; j < c1; j++)
             {
-                result[i][j] = M1[i][j] + M2[i][j];
+                printf("%d  ",M1[i][j] + M2[i][j]);
             }
+            printf("\n");
         }
-        printf("\nAddition success:-)\nPrinting Result...\n");
-        return result;
     }
     else
     {
-        printf("\nCannot add these matrices :-(\n"
-            "Printing matrix1...\n");
-        return M1;
+        printf("\nCannot add these matrices :-(\n");
     }
     
 }
 
-int ** SubtractM(int **M1, int **M2)
+void SubtractM(int** M1, int** M2)
 {
-    if(r1 == r2 && c1 == c2)
+    if (r1 == r2 && c1 == c2)
     {
-        int **result = FormMatrix(r1, c1);
-
-        for(int i = 0; i < r1; i++)
-        {
-            for(int j = 0; j < c1; j++)
-            {
-                result[i][j] = M1[i][j] - M2[i][j];
-            }
-        }
         printf("\nSubtraction success:-)\nPrinting Result...\n");
-        return result;
+        for (int i = 0; i < r1; i++)
+        {
+            for (int j = 0; j < c1; j++)
+            {
+                printf("%d  ", M1[i][j] - M2[i][j]);
+            }
+            printf("\n");
+        }
     }
     else
     {
-        printf("\nCannot subtract these matrices :-(\n"
-            "Printing matrix1...\n");
-        return M1;
+        printf("\nCannot subtract these matrices :-(\n");
     }
 }
 
-int ** MultiplyM(int **M1, int **M2)
+void MultiplyM(int **M1, int **M2)
 {
     if(c1 == r2)
     {
+        printf("\nMultiplication success:-)\nResult...\n");
         int **result = FormMatrix(r1, c2);
         for(int i = 0; i < r1; i++)
         {
@@ -101,19 +102,17 @@ int ** MultiplyM(int **M1, int **M2)
                 }
             }
         }
-        printf("\nMultiplication success:-)\nPrinting Result...\n");
-        return result;
-
+        printMatrix(result, r1, c2);
+        //freeing memory
+        freeMemory(result, r1);
     }
     else
     {
-        printf("\nCannot multiply these matrices :-(\n"
-            "Printing matrix1...\n");
-        return M1;
+        printf("\nCannot multiply these matrices :-(\n");
     }
 }
 
-int** CofactorMatrix(int** matrix, int r, int c)
+int** Cofactors(int** matrix, int r, int c)
 {
     int** m = FormMatrix(r, c);
     for (int i = 0; i < r; i++)
@@ -133,12 +132,11 @@ double Det(int** M1)
 
 double Determinant(int** M1, int r1, int c1)
 {
-    //0 isn't a worthy condition, coming up with something worthy
     double det = 0;
     if (r1 != c1)
     {
         printf("\nThe determinant of this matrix can not be determined :-(\n");
-        return det;
+        return detERROR;
     }
     if (r1 == 2)
     {
@@ -146,10 +144,8 @@ double Determinant(int** M1, int r1, int c1)
     }
     else
     {
-
         int hmm = 0;
-        int** cfm = CofactorMatrix(M1, r1, c1);
-        //printMatrix(cfm,r1, c1); //was for debugging purposes :-)
+        int** cfs = Cofactors(M1, r1, c1); //unfreed memory
         hmm++;
         for (int i = 0; i < r1; i++)
         {
@@ -171,7 +167,7 @@ double Determinant(int** M1, int r1, int c1)
             }
             fclose(fp);
             FILE* fpr = fopen("temp.txt", "r");
-            int** m = FormMatrix(r1 - hmm, c1 - hmm);
+            int** m = FormMatrix(r1 - hmm, c1 - hmm); //unfreed memory
             for (int f = 0; f < r1 - hmm; f++)
             {
                 for (int g = 0; g < c1 - hmm; g++)
@@ -180,11 +176,80 @@ double Determinant(int** M1, int r1, int c1)
                 }
             }
             fclose(fpr);
-
-            det += M1[0][i] * cfm[0][i] * Determinant(m, r1 - hmm, c1 - hmm);
+            det += M1[0][i] * cfs[0][i] * Determinant(m, r1 - hmm, c1 - hmm);
         }
         remove("temp.txt");
         return det;
 
+    }
+}
+
+int IsEqual(int** m1, int** m2)
+{
+    if (r1 == r2 && c1 == c2)
+    {
+        for (int i = 0; i < r1; i++)
+        {
+            for(int j = 0; j < c1; j++)
+            {
+                if (m1[i][j] != m2[i][j])
+                {
+                    return 0;
+                }
+                
+            }
+        }
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
+}
+
+void IdentityMatrix(int r, int c)
+{
+    int** m = FormMatrix(r, c);
+    for (int i = 0; i < r; i++)
+    {
+        for (int j = 0; j < c; j++)
+        {
+            if (i == j)
+            {
+                m[i][j] = 1;
+            }
+            else
+            {
+                m[i][j] = 0;
+            }
+        }
+    }
+    printMatrix(m, r, c);
+    freeMemory(m, r);
+}
+
+void Transpose(int** m, int r, int c)
+{
+    int** tm = FormMatrix(c, r);
+    for (int i = 0; i < c; i++)
+    {
+        for (int j = 0; j < r; j++)
+        {
+            tm[i][j] = m[j][i];
+        }
+    }
+    printMatrix(tm, c, r);
+    freeMemory(tm, c);
+}
+
+void MultiplyS(int** m, int r, int c, int scalar)
+{
+    for (int i = 0; i < r; i++)
+    {
+        for (int j = 0; j < c; j++)
+        {
+            printf("%d  ",scalar * m[i][j]);
+        }
+        printf("\n");
     }
 }
