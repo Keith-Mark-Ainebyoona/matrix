@@ -1,5 +1,4 @@
 #include "matrix.h"
-#include <math.h>
 
 int r1, r2, c1, c2;
 int** FormMatrix(int r1, int c1)
@@ -11,11 +10,20 @@ int** FormMatrix(int r1, int c1)
 	}
     return Matrix;
 }
+
 void freeMemory(int** m, int r)
 {
-    for (int i = 0; i < r; i++)
+    if (m)
     {
-        free(m[i]);
+        for (int i = 0; i < r; ++i)
+        {
+            if (m[i])
+            {
+                free(m[i]);
+            }
+        }
+
+        free(m);
     }
 }
 
@@ -177,8 +185,10 @@ double Determinant(int** M1, int r1, int c1)
             }
             fclose(fpr);
             det += M1[0][i] * cfs[0][i] * Determinant(m, r1 - hmm, c1 - hmm);
+            freeMemory(m,r1-hmm);
         }
         remove("temp.txt");
+        freeMemory(cfs,r1);
         return det;
 
     }
