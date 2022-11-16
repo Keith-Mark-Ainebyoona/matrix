@@ -2,6 +2,7 @@
 #define MATRIX_H
 #define detERROR -10000000 //hopefully, no matrix has this as its determinant.
 
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 
