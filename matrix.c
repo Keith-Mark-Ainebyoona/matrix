@@ -8,7 +8,9 @@ int** FormMatrix(int r1, int c1)
 	{
         Matrix[i] = (int *)calloc(c1, sizeof(int));	
 	}
+    count++;
     return Matrix;
+  
 }
 
 void freeMemory(int** m, int r)
@@ -24,6 +26,7 @@ void freeMemory(int** m, int r)
         }
 
         free(m);
+        count--;
     }
 }
 
@@ -153,7 +156,7 @@ double Determinant(int** M1, int r1, int c1)
     else
     {
         int hmm = 0;
-        int** cfs = Cofactors(M1, r1, c1); //unfreed memory
+        int** cfs = Cofactors(M1, r1, c1); 
         hmm++;
         for (int i = 0; i < r1; i++)
         {
@@ -175,7 +178,7 @@ double Determinant(int** M1, int r1, int c1)
             }
             fclose(fp);
             FILE* fpr = fopen("temp.txt", "r");
-            int** m = FormMatrix(r1 - hmm, c1 - hmm); //unfreed memory
+            int** m = FormMatrix(r1 - hmm, c1 - hmm); 
             for (int f = 0; f < r1 - hmm; f++)
             {
                 for (int g = 0; g < c1 - hmm; g++)
@@ -262,4 +265,62 @@ void MultiplyS(int** m, int r, int c, int scalar)
         }
         printf("\n");
     }
+}
+
+void Adjoint(int** m, int r, int c)
+{
+    int** am = FormMatrix(r, c);
+    int** temp = FormMatrix(r - 1, c - 1);
+    int** cfs = Cofactors(m, r, c);
+    if (r == 2)
+    {
+        am[0][0] = m[1][1];
+        am[1][1] = m[0][0];
+        am[0][1] = -1 * m[0][1];
+        am[1][0] = -1 * m[1][0];
+    }
+    else
+    {
+        for (int i = 0; i < r; i++)
+        {
+            for (int j = 0; j < c; j++)
+            {
+                FILE* fp = fopen("temp1.txt", "w");
+                for (int x = 0; x < r; x++)
+                {
+                    if (x == i)
+                    {
+                        continue;
+                    }
+                    for (int y = 0; y < c; y++)
+                    {
+                        if (y == j)
+                        {
+                            continue;
+                        }
+                        fprintf(fp, "%d ", m[x][y]);
+                    }
+                }
+                fclose(fp);
+                FILE* fpr = fopen("temp1.txt", "r");
+                for (int f = 0; f < r - 1; f++)
+                {
+                    for (int g = 0; g < c - 1; g++)
+                    {
+                        fscanf(fpr, "%d", &temp[f][g]);
+                    }
+                }
+                fclose(fpr);
+                int det = (int)Determinant(temp, r - 1, c - 1);
+                am[i][j] = cfs[i][j] * det;
+
+
+            }
+        }
+
+    }
+    Transpose(am, r, c);
+    freeMemory(temp, r - 1);
+    freeMemory(cfs, r);
+    freeMemory(am, r);
 }

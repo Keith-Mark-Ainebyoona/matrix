@@ -7,6 +7,7 @@
 #include <stdlib.h>
 
 extern int r1, r2, c1, c2;
+int count;
 int** FormMatrix(int, int);
 void fillMatrix(int **, int, int);
 void printMatrix(int **, int, int);
@@ -21,5 +22,7 @@ void IdentityMatrix(int, int);
 void Transpose(int**, int, int);
 void MultiplyS(int**, int, int, int);
 void freeMemory(int** m, int r);
+void Adjoint(int** m, int r, int c);
+
 
 #endif

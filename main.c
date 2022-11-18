@@ -1,5 +1,5 @@
 #include "matrix.h"
-
+count = 0;
 int main(void)
 {
 	printf("Enter row and columns of matrix1\n"
@@ -22,12 +22,12 @@ int main(void)
 	SubtractM(matrix1, matrix2);
 	MultiplyM(matrix1, matrix2);
 
-	int det1 = Determinant(matrix1, r1, c1);
+	double det1 = Determinant(matrix1, r1, c1);
 	if (det1 != detERROR)
 	{
 		printf("\nDeterminant of matrix 1 is : %.2lf\n", det1);
 	}
-	int det2 = Determinant(matrix2, r2, c2);
+	double det2 = Determinant(matrix2, r2, c2);
 	if (det2 != detERROR)
 	{
 		printf("\nDeterminant of matrix 2 is : %.2lf\n", det2);
@@ -53,10 +53,15 @@ int main(void)
 
 	printf("\n\nmultiplying matrix1 by a 5 (scalar)\n");
 	MultiplyS(matrix1, r1, c1, 5);
-
+	printf("\n\n");
+	Adjoint(matrix1, r1, c1);
+	printf("\n\n");
+	Adjoint(matrix2, r2, c2);
+	
 	freeMemory(matrix1, r1);
 	freeMemory(matrix2, r2);
-	
+
+	printf("\n\n%d", count);
 	return 0;
 
 }
